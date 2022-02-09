@@ -1,12 +1,36 @@
-import React from "react";
-// import ListingCard from "./ListingCard";
+import React, { useEffect, useState } from "react";
+import ListingCard from "./ListingCard";
+import NewListingForm from "./NewListingForm";
 
-function ListingsContainer() {
+function ListingsContainer({ search }) {
+  const [listings, setListings] = useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:6001/listings")
+      .then((resp) => resp.json())
+      .then(setListings);
+    // .then((data) => setListings(data));
+  }, []);
+
+  const filteredListings = listings.filter((listing) => {
+    const lowercasedDescription = listing.description.toLowerCase();
+    const lowercasedLocation = listing.location.toLowerCase();
+    const lowercasedSearch = search.toLowerCase();
+
+    return (
+      lowercasedDescription.includes() ||
+      lowercasedLocation.includes(lowercasedSearch)
+    );
+  });
+
+  const renderListings = filteredListings.map((listing) => (
+    <ListingCard key={listing.id} listing={listing} setListings={setListings} />
+  ));
+
   return (
     <main>
-      <ul className="cards">
-        {/* use the ListingCard component to display listings */}
-      </ul>
+      <NewListingForm setListings={setListings} />
+      <ul className="cards">{renderListings}</ul>
     </main>
   );
 }
