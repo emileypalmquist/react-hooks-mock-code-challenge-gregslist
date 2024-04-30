@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ListingCard from "./ListingCard";
 
-function ListingsContainer() {
+function ListingsContainer({ search }) {
   const [listings, setListings] = useState([])
 
   useEffect(() => {
@@ -15,7 +15,13 @@ function ListingsContainer() {
     setListings(filteredListings)
   }
 
-  const listingCards = listings.map((listing) => (
+  const filteredListings = listings.filter((listing) => {
+    const lowercaseSearch = search.toLowerCase()
+    const lowercaseDescription = listing.description.toLowerCase()
+    return lowercaseDescription.includes(lowercaseSearch)
+  })
+
+  const listingCards = filteredListings.map((listing) => (
     <ListingCard key={listing.id} listing={listing} removeListing={removeListing} />
   ))
 
